@@ -9,10 +9,11 @@ set(SRCS
         test3
         test4
         test5
+        test6
         )
 
 foreach(SRC ${SRCS})
     add_executable(${SRC}
             ${SRC}.cpp
-             )
+            )
 endforeach()
