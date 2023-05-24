@@ -10,5 +10,5 @@ set(SRCS
 foreach(SRC ${SRCS})
     add_executable(${SRC}
             ${SRC}.cpp
-            test2.cpp test3.cpp)
+            test2.cpp test3.cpp "test 4.cpp")
 endforeach()
