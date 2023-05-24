@@ -14,8 +14,8 @@ int main()
     }
     string a = to_string(sum);
     string arr[10] = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
-    cout << arr[s[0] - '0'];
-    for (int i = 1; i < s.length(); i++)
-        cout << " " << arr[s[i] - '0'];
+    cout << arr[a[0] - '0'];
+    for (int i = 1; i < a.length(); i++)
+        cout << " " << arr[a[i] - '0'];
     return 0;
 }
