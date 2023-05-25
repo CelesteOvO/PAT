@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <set>
+
 using namespace std;
 
 // 找到一棵树的最深根节点
@@ -9,6 +11,10 @@ vector<vector<int>> graph;
 // 一个图的邻接表表示形式，其中graph是一个二维向量，graph[i]存储与节点i相邻的节点
 vector<int> distances;
 // 定义了一个向量distances，用于存储从根节点到每个节点的距离。初始时，将所有节点的距离初始化为-1。
+vector<int> deepestRoots;
+set<int> s;
+bool visit[10010];
+int maxDistance = 0;
 
 // 使用广度优先搜索（BFS）算法遍历图。
 // 从根节点开始，将根节点加入队列，并将其距离设置为0。
@@ -33,6 +39,21 @@ void BFS(int start) {
     }
 }
 
+void DFS(int node, int height) {
+    if(height > maxDistance) {
+        deepestRoots.clear();
+        deepestRoots.push_back(node);
+        maxDistance = height;
+    } else if(height == maxDistance){
+        deepestRoots.push_back(node);
+    }
+    visit[node] = true;
+    for(int i : graph[node]) {
+        if(!visit[i])
+            DFS(i, height + 1);
+    }
+}
+
 int main() {
     int N;
     cin >> N;
@@ -53,41 +74,31 @@ int main() {
     BFS(1);
 
     // Find the node with maximum distance
-    int maxDistance = 0;
-    vector<int> deepestRoots;
-
+    int s1 = 0, cnt = 0;
     for (int i = 1; i <= N; i++) {
-        if (distances[i] > maxDistance) {
-            maxDistance = distances[i];
-            // 通过遍历distances向量，找到具有最大距离的节点，并将其存储在maxDistance中。
-            deepestRoots.clear();
-            deepestRoots.push_back(i);
-        } else if (distances[i] == maxDistance) {
-            deepestRoots.push_back(i);
-            // 遍历所有节点，找到与最大距离相等的节点，并将其存储在deepestRoots向量中。
+        if(!visit[i]) {
+            DFS(i, 1);
+            if(i == 1) {
+                if (!deepestRoots.empty()) s1 = deepestRoots[0];
+                for(int deepestRoot : deepestRoots)
+                    s.insert(deepestRoot);
+            }
+            cnt++;
         }
     }
 
-    // Check if the graph is a tree
-    bool isTree = true;
-    // 检查图是否是一棵树。
-    // 遍历distances向量，如果发现某个节点的距离为-1，则表示该节点无法从根节点访问到，因此图不是一棵树。
-    for (int i = 1; i <= N; i++) {
-        if (distances[i] == -1) {
-            isTree = false;
-            break;
-        }
-    }
-
-    // Output the result
-    if (isTree) {
-        for (int root : deepestRoots) {
-            cout << root << endl;
-        }
+    if(cnt >= 2) {
+        printf("Error: %d components", cnt);
     } else {
-        cout << "Error: " << N - deepestRoots.size() << " components" << endl;
+        deepestRoots.clear();
+        maxDistance = 0;
+        fill(visit, visit + 10010, false);
+        DFS(s1, 1);
+        for(int i = 0; i < deepestRoots.size(); i++)
+            s.insert(deepestRoots[i]);
+        for(auto it = s.begin(); it != s.end(); it++)
+            printf("%d\n", *it);
     }
-
     return 0;
 }
 
