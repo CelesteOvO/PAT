@@ -22,6 +22,7 @@ set(SRCS
         test16
         test17
         test19
+        test20
         )
 
 foreach(SRC ${SRCS})
