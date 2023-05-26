@@ -44,6 +44,7 @@ int main()
         getchar();
         getline(cin, query);
         vector<book> result;
+        cout << type << ": " << query << endl;
         switch(type) {
             case 1:
                 for(int j = 0; j < N; j++) {
