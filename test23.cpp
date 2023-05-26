@@ -1,90 +1,53 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <algorithm>
 
-using namespace std;
+bool isPermutation(const std::string& num1, const std::string& num2) {
+    // 将两个数字的字符进行排序
+    std::string sortedNum1 = num1;
+    std::string sortedNum2 = num2;
+    std::sort(sortedNum1.begin(), sortedNum1.end());
+    std::sort(sortedNum2.begin(), sortedNum2.end());
 
-vector<char> number;
-vector<pair<char,bool>> IsFind;
-
-int findIndex(char i)
-{
-    for(int j = 0; j < IsFind.size(); j++)
-    {
-        if(i == IsFind[j].first)
-        {
-            return j;
-        }
-    }
-
-    return -1;
+    // 比较排序后的数字是否相等
+    return sortedNum1 == sortedNum2;
 }
 
-int main()
-{
-    string s;
-    cin >> s;
+std::string multiplyByTwo(const std::string& num) {
+    std::string result; // 用于存储乘以2后的结果
+    int carry = 0; // 表示进位。初始化为0
 
-    for(char i : s){
-        if(number.empty())
-        {
-            number.push_back(i);
-        }else{
-            bool find = false;
-            for(auto n : number)
-            {
-                if(i == n)
-                {
-                    find = true;
-                }
-            }
-            if(!find)
-            {
-                number.push_back(i);
-            }
-        }
+    // 从数字字符串的最后一位开始遍历，即从num.length() - 1到0。这是因为在乘法中，我们从低位到高位进行计算。
+    for (int i = num.length() - 1; i >= 0; i--) {
+        int digit = (num[i] - '0') * 2 + carry; // 我们将当前位的字符转换为数字，然后乘以2，再加上进位
+        carry = digit / 10; // 更新进位carry为digit / 10
+        result.push_back((digit % 10) + '0'); // 我们将digit的个位数（即digit % 10）转换回字符
     }
 
-    unsigned long long int num;
-    num = 2 * stoull(s);
-    string str = to_string(num);
-
-    for(auto n : number)
-    {
-        IsFind.emplace_back(n, false);
+    // 如果最后一次计算的结果carry大于0，则将carry转换为字符并添加到result中
+    if (carry > 0) {
+        result.push_back(carry + '0');
     }
 
-    for(char i : str)
-    {
-        for(auto n : number)
-        {
-            if(i == n)
-            {
-                int index = findIndex(i);
-                if(index != -1)
-                    IsFind[index].second = true;
-            }
-        }
-    }
+    // 最后，我们使用std::reverse函数将result字符串反转，以得到正确的结果。
+    std::reverse(result.begin(), result.end());
+    return result;
+}
 
-    int count = 0;
-    for(auto n : IsFind)
-    {
-        if(!n.second)
-        {
-            cout << "No" << endl;
-            cout << num;
-            return 0;
-        }else{
-            count++;
-            if(count == IsFind.size())
-            {
-                cout << "Yes" << endl;
-                cout << num;
-                return 0;
-            }
-        }
+int main() {
+    std::string num;
+    std::cin >> num;
+
+    std::string doubledNum = multiplyByTwo(num);
+
+    bool isPermutationResult = isPermutation(num, doubledNum);
+
+    if (isPermutationResult) {
+        std::cout << "Yes" << std::endl;
+    } else {
+        std::cout << "No" << std::endl;
     }
+    std::cout << doubledNum << std::endl;
 
     return 0;
 }
