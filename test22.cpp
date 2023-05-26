@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ int main()
 {
     int N;
     cin >> N;
+    int count;
     vector<book> books(N);
     for(int i = 0; i < N; i++) {
         cin >> books[i].ID;
@@ -45,6 +47,13 @@ int main()
         getline(cin, query);
         vector<book> result;
         cout << type << ": " << query << endl;
+        vector<pair<string,bool>> keyword;
+        if(type == 3){
+            stringstream ss(query);
+            while(ss >> query) {
+                keyword.emplace_back(query, false);
+            }
+        }
         switch(type) {
             case 1:
                 for(int j = 0; j < N; j++) {
@@ -59,11 +68,19 @@ int main()
                 }
                 break;
             case 3:
+                count = 0;
                 for(int j = 0; j < N; j++) {
-                    for(int k = 0; k < books[j].keywords.size(); k++) {
-                        if(books[j].keywords[k] == query) {
-                            result.push_back(books[j]);
-                            break;
+                    for(const auto & k : books[j].keywords) {
+                        for(auto & l : keyword) {
+                            if(k == l.first) {
+                                l.second = true;
+                                count++;
+                            }
+                            if(count == keyword.size())
+                            {
+                                result.push_back(books[j]);
+                                count = 0;
+                            }
                         }
                     }
                 }
