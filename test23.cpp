@@ -1,43 +1,90 @@
 #include <iostream>
+#include <vector>
 #include <string>
-#include <algorithm>
 
-bool isPermutation(const std::string& num1, const std::string& num2) {
-    // 将两个数字的字符进行排序
-    std::string sortedNum1 = num1;
-    std::string sortedNum2 = num2;
-    std::sort(sortedNum1.begin(), sortedNum1.end());
-    std::sort(sortedNum2.begin(), sortedNum2.end());
+using namespace std;
 
-    // 比较排序后的数字是否相等
-    return sortedNum1 == sortedNum2;
+vector<char> number;
+vector<pair<char,bool>> IsFind;
+
+int findIndex(char i)
+{
+    for(int j = 0; j < IsFind.size(); j++)
+    {
+        if(i == IsFind[j].first)
+        {
+            return j;
+        }
+    }
+
+    return -1;
 }
 
-int main() {
-    std::string num;
-    std::cin >> num;
+int main()
+{
+    string s;
+    cin >> s;
 
-    // 将数字字符串转换为整数
-    unsigned long long int originalNum = std::stoull(num);
-    // stoull函数是C++11中的函数，用于将字符串转换为unsigned long long int类型的整数
-
-    // 将原数字翻倍
-    unsigned long long int doubledNum = originalNum * 2;
-
-    // 将原数字和翻倍后的数字转换为字符串
-    std::string originalNumStr = std::to_string(originalNum);
-    std::string doubledNumStr = std::to_string(doubledNum);
-
-    // 检查翻倍后的数字是否是原数字的排列
-    bool isPermutationResult = isPermutation(originalNumStr, doubledNumStr);
-
-    // 输出结果
-    if (isPermutationResult) {
-        std::cout << "Yes" << std::endl;
-    } else {
-        std::cout << "No" << std::endl;
+    for(char i : s){
+        if(number.empty())
+        {
+            number.push_back(i);
+        }else{
+            bool find = false;
+            for(auto n : number)
+            {
+                if(i == n)
+                {
+                    find = true;
+                }
+            }
+            if(!find)
+            {
+                number.push_back(i);
+            }
+        }
     }
-    std::cout << doubledNumStr << std::endl;
+
+    unsigned long long int num;
+    num = 2 * stoull(s);
+    string str = to_string(num);
+
+    for(auto n : number)
+    {
+        IsFind.emplace_back(n, false);
+    }
+
+    for(char i : str)
+    {
+        for(auto n : number)
+        {
+            if(i == n)
+            {
+                int index = findIndex(i);
+                if(index != -1)
+                    IsFind[index].second = true;
+            }
+        }
+    }
+
+    int count = 0;
+    for(auto n : IsFind)
+    {
+        if(!n.second)
+        {
+            cout << "No" << endl;
+            cout << num;
+            return 0;
+        }else{
+            count++;
+            if(count == IsFind.size())
+            {
+                cout << "Yes" << endl;
+                cout << num;
+                return 0;
+            }
+        }
+    }
 
     return 0;
 }
